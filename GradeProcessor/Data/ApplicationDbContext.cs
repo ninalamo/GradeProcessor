@@ -24,12 +24,12 @@ public partial class ApplicationDbContext : IdentityDbContext
         builder.Entity<Section>().HasKey(x => x.Id);
         builder.Entity<Section>().Property(x => x.Name).IsRequired();
         builder.Entity<Section>()
-            .Property("_subjectId")
+            .Property<int>("_subjectId")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("SubjectId")
             .IsRequired();
 
-        builder.Entity<Section>().HasOne<Subject>().WithMany().HasForeignKey("_subjectId");
+        builder.Entity<Section>().HasOne<Subject>(s => s.Subject).WithMany().HasForeignKey("_subjectId");
 
 
         builder.Entity<Student>().HasKey(x => x.Id);

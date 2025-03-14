@@ -1,0 +1,33 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "secs";
+}
+
+<h2>Sections</h2>
+
+<!-- Create Button -->
+<a asp-action="Create" class="btn btn-primary mb-3">Add New Section</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Section Name</th>
+            <th>Subject</th>
+            <th>Student Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sec in Model)
+        {
+            <tr>
+                <td>@sec.Name</td>
+                <td>@sec.SubjectName</td>
+                <td>@sec.StudentCount</td>
+                <td>
+                    <a asp-action="Manage" asp-route-id="@sec.Id" class="btn btn-primary btn-sm">Manage</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

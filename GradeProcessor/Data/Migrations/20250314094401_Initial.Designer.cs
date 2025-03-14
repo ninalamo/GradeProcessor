@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeProcessor.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314081532_init")]
-    partial class init
+    [Migration("20250314094401_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace GradeProcessor.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("GradeProcessor.Data.ApplicationDbContext+Section", b =>
+            modelBuilder.Entity("GradeProcessor.Data.Section", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,17 +40,18 @@ namespace GradeProcessor.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
+                    b.Property<int>("_subjectId")
+                        .HasColumnType("int")
+                        .HasColumnName("SubjectId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId");
+                    b.HasIndex("_subjectId");
 
                     b.ToTable("Sections");
                 });
 
-            modelBuilder.Entity("GradeProcessor.Data.ApplicationDbContext+Student", b =>
+            modelBuilder.Entity("GradeProcessor.Data.Student", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,13 +85,20 @@ namespace GradeProcessor.Data.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("GradeProcessor.Data.ApplicationDbContext+Subject", b =>
+            modelBuilder.Entity("GradeProcessor.Data.Subject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -321,15 +329,13 @@ namespace GradeProcessor.Data.Migrations
                     b.ToTable("SectionStudent");
                 });
 
-            modelBuilder.Entity("GradeProcessor.Data.ApplicationDbContext+Section", b =>
+            modelBuilder.Entity("GradeProcessor.Data.Section", b =>
                 {
-                    b.HasOne("GradeProcessor.Data.ApplicationDbContext+Subject", "Subject")
+                    b.HasOne("GradeProcessor.Data.Subject", null)
                         .WithMany()
-                        .HasForeignKey("SubjectId")
+                        .HasForeignKey("_subjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -385,13 +391,13 @@ namespace GradeProcessor.Data.Migrations
 
             modelBuilder.Entity("SectionStudent", b =>
                 {
-                    b.HasOne("GradeProcessor.Data.ApplicationDbContext+Section", null)
+                    b.HasOne("GradeProcessor.Data.Section", null)
                         .WithMany()
                         .HasForeignKey("SectionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GradeProcessor.Data.ApplicationDbContext+Student", null)
+                    b.HasOne("GradeProcessor.Data.Student", null)
                         .WithMany()
                         .HasForeignKey("StudentsId")
                         .OnDelete(DeleteBehavior.Cascade)

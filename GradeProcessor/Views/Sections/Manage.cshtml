@@ -1,0 +1,63 @@
+﻿@model GradeProcessor.Data.Section
+@{
+    ViewData["Title"] = "Manage Section";
+}
+
+<h2>Manage Section: @Model.Name</h2>
+
+@if (Model.Subject != null)
+{
+    <p>
+        <strong>Subject:</strong> @Model.Subject.Name
+        <span class="badge @(Model.Subject.IsActive ? "badge-success" : "badge-danger")">
+            @(Model.Subject.IsActive ? "Active" : "Inactive")
+        </span>
+    </p>
+}
+
+<hr />
+
+<h3>Enrolled Students</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student Number</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model.Students)
+        {
+            <tr>
+                <td>@student.StudentNumber</td>
+                <td>@student.FirstName @student.LastName</td>
+                <td>
+                    <form asp-action="RemoveStudent" method="post" class="form-inline" style="display:inline-block;">
+                        <input type="hidden" name="sectionId" value="@Model.Id" />
+                        <input type="hidden" name="studentId" value="@student.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h3>Enroll Existing Students</h3>
+<form asp-action="AddStudents" method="post">
+    <input type="hidden" name="sectionId" value="@Model.Id" />
+    <div class="form-group">
+        <label for="studentIds">Select Students</label>
+        <select id="studentIds" name="studentIds" class="form-control" multiple size="10">
+            @* ViewBag.AllStudents is assumed to be a List<GradeProcessor.Data.Student> *@
+            @foreach (var student in ViewBag.AllStudents as List<GradeProcessor.Data.Student>)
+            {
+                <option value="@student.Id">@student.FirstName @student.LastName (@student.StudentNumber)</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Enroll Selected Students</button>
+</form>

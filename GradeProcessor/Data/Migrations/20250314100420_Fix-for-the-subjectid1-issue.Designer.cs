@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GradeProcessor.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314084957_minor-update")]
-    partial class minorupdate
+    [Migration("20250314100420_Fix-for-the-subjectid1-issue")]
+    partial class Fixforthesubjectid1issue
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,8 +45,6 @@ namespace GradeProcessor.Data.Migrations
                         .HasColumnName("SubjectId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("_subjectId");
 
                     b.ToTable("Sections");
                 });
@@ -327,15 +325,6 @@ namespace GradeProcessor.Data.Migrations
                     b.HasIndex("StudentsId");
 
                     b.ToTable("SectionStudent");
-                });
-
-            modelBuilder.Entity("GradeProcessor.Data.Section", b =>
-                {
-                    b.HasOne("GradeProcessor.Data.Subject", null)
-                        .WithMany()
-                        .HasForeignKey("_subjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

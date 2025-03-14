@@ -15,9 +15,9 @@
             _subjectId = subjectId;
             Name = name;
         }
-        public required string? Name { get; set; }
+        public string? Name { get; set; }
 
-        public Subject? Subject { get; }
+        public Subject? Subject { get; private set; }
 
         public ICollection<Student> Students { get; }
     }
