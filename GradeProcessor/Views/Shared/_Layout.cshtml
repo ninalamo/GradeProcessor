@@ -45,6 +45,14 @@
         </nav>
     </header>
     <div class="container">
+        <!-- Breadcrumb Bar -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
