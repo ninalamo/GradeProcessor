@@ -1,0 +1,15 @@
+﻿@using WebApplication1.Data
+@model Section
+
+<h2>Create Section</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label for="Description">Section Name</label>
+        <input asp-for="Id" class="form-control" required/>
+        <input asp-for="Description" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Create</button>
+</form>
+
+<a asp-action="Index">Back to List</a>

@@ -1,0 +1,90 @@
+﻿@using WebApplication1.Data
+@model Section
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2>Manage Section: @Model.Description</h2>
+            @if (Model.Subject != null)
+            {
+                <p>Subject: @Model.Subject.Name (@(Model.Subject.IsActive ? "Active" : "Inactive"))</p>
+            }
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Upload JSON Section -->
+                <div class="col-md-6 mb-4">
+                    <h4>Upload Students JSON</h4>
+                    <form asp-action="UploadStudents" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="sectionId" value="@Model.Id" />
+                        <div class="form-group">
+                            <label>Select JSON File</label>
+                            <input type="file" name="file" class="form-control" accept=".json" required />
+                        </div>
+                        <button type="submit" class="btn btn-info mt-2">Upload & Add Students</button>
+                    </form>
+                </div>
+
+                <!-- Add New Student Section -->
+                <div class="col-md-6 mb-4">
+                    <h4>Add New Student</h4>
+                    <form asp-action="AddStudent" method="post">
+                        <input type="hidden" name="sectionId" value="@Model.Id" />
+                        <div class="form-group">
+                            <label>Student Number</label>
+                            <input type="text" name="studentNumber" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="firstName" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lastName" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">Add & Assign</button>
+                    </form>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Students Table -->
+            <h4>Students in Section</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Student Number</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model.Students)
+                        {
+                            <tr>
+                                <td>@student.StudentNumber</td>
+                                <td>@student.FirstName @student.LastName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <a asp-action="Index" class="btn btn-secondary">Back to Sections</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/Sections/GetStudents")
+                .then(response => response.json())
+                .then(data => {
+                    // You can use this data for a search/autocomplete control if needed.
+                    console.log(data);
+                });
+        });
+    </script>
+}

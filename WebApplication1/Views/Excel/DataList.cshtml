@@ -1,0 +1,14 @@
+﻿@model IEnumerable<AssignmentData>
+
+<h2>Uploaded Data</h2>
+<table>
+    <tr>
+        <th>Column Data</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ColumnData</td>
+        </tr>
+    }
+</table>

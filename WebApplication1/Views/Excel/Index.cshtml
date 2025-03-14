@@ -1,0 +1,48 @@
+﻿@model IEnumerable<WebApplication1.Models.AssignmentData>
+
+@using (Html.BeginForm("Upload", "Excel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+        <label for="sheetName">Sheet Name:</label>
+        <input type="text" id="sheetName" name="sheetName" placeholder="Enter sheet name" />
+    </div>
+    <div>
+        <label for="file">Excel File:</label>
+        <input type="file" id="file" name="file" />
+    </div>
+    <div>
+        <input type="submit" value="Upload" />
+    </div>
+}
+
+@if (Model.Any())
+{
+    <h2>Uploaded Data</h2>
+    <table>
+        <tr>
+            <th>Column Data</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ColumnData</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>No data available.</p>
+}
+
+@section Scripts {
+    <script>
+        // Trim the sheetName input value before the form is submitted
+        document.querySelector('form').addEventListener('submit', function () {
+            var sheetInput = document.getElementById('sheetName');
+            if (sheetInput) {
+                sheetInput.value = sheetInput.value.trim();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,34 @@
+﻿@using WebApplication1.Data
+@model IEnumerable<Section>
+
+<h2>Sections</h2>
+<a asp-action="Create" class="btn btn-primary">Create New Section</a>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Is Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.Description</td>
+                    <td>@(s.IsActive ? "Yes" : "No")</td>
+                    <td>
+                        <a asp-action="Manage" asp-route-id="@s.Id" class="btn btn-info">Manage</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No sections available.</p>
+}
