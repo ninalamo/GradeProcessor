@@ -1,6 +1,9 @@
-﻿@model GradeProcessor.Data.Section
+﻿@using GradeProcessor.Data
+@model Section
+
 @{
     ViewData["Title"] = "Manage Section";
+    ViewBag.PaginationAction = "Manage";
 }
 
 <h2>Manage Section: @Model.Name</h2>
@@ -17,6 +20,57 @@
 
 <hr />
 
+<!-- Inline Enrollment and Bulk Upload Controls -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex flex-wrap gap-3">
+            <!-- Enroll Existing Students -->
+            <form asp-action="AddStudents" method="post" class="flex-fill">
+                <input type="hidden" name="sectionId" value="@Model.Id" />
+                <div class="input-group">
+                    <span class="input-group-text">Enroll:</span>
+                    <select id="studentIds" name="studentIds" class="form-control" multiple="multiple">
+                        @foreach (var student in ViewBag.AllStudents as List<Student>)
+                        {
+                            <option value="@student.Id">@student.FirstName @student.LastName (@student.StudentNumber)</option>
+                        }
+                    </select>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-success">Enroll</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Bulk Upload CSV -->
+            <form asp-action="UploadStudentsCsv" method="post" enctype="multipart/form-data" class="flex-fill">
+                <input type="hidden" name="sectionId" value="@Model.Id" />
+                <div class="input-group">
+                    <span class="input-group-text">Bulk Upload:</span>
+                    <input type="file" name="file" class="form-control" accept=".csv" required />
+                    <button type="submit" class="btn btn-success">Upload CSV</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (TempData["UploadMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["UploadMessage"]
+    </div>
+}
+
+@if (TempData["FailedMessage"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["FailedMessage"]
+        <a asp-action="DownloadFailedCsv" class="btn btn-link">Download Failed CSV</a>
+    </div>
+}
+
+<hr />
+
 <h3>Enrolled Students</h3>
 <table class="table table-striped">
     <thead>
@@ -27,13 +81,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var student in Model.Students)
+        @foreach (var student in ViewBag.PagedStudents as List<Student>)
         {
             <tr>
                 <td>@student.StudentNumber</td>
-                <td>@student.FirstName @student.LastName</td>
+                <td>@student.GetFullNameVariant()</td>
                 <td>
-                    <form asp-action="RemoveStudent" method="post" class="form-inline" style="display:inline-block;">
+                    <form asp-action="RemoveStudent" method="post" class="d-inline">
                         <input type="hidden" name="sectionId" value="@Model.Id" />
                         <input type="hidden" name="studentId" value="@student.Id" />
                         <button type="submit" class="btn btn-danger btn-sm">Remove</button>
@@ -44,38 +98,29 @@
     </tbody>
 </table>
 
-<hr />
+<!-- Render pagination partial for the enrolled students -->
+@await Html.PartialAsync("_Pagination", new GradeProcessor.Models.PaginationModel
+{
+    ActionName = "Manage",
+    Id = Model.Id,
+    SearchTerm = ViewBag.SearchTerm as string ?? "",
+    CurrentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1,
+    TotalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 1
+})
 
-<h3>Enroll Existing Students</h3>
-<form asp-action="AddStudents" method="post">
-    <input type="hidden" name="sectionId" value="@Model.Id" />
-    <div class="form-group">
-        <label for="studentIds">Select Students</label>
-        <select id="studentIds" name="studentIds" class="form-control" multiple="multiple" style="width: 100%;">
-            @* ViewBag.AllStudents is assumed to be a List<GradeProcessor.Data.Student> *@
-            @foreach (var student in ViewBag.AllStudents as List<GradeProcessor.Data.Student>)
-            {
-                <option value="@student.Id">@student.FirstName @student.LastName (@student.StudentNumber)</option>
-            }
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Enroll Selected Students</button>
-</form>
 
 @section Scripts {
-    <!-- Include jQuery if not already included in your layout -->
+    <!-- Include jQuery if not already in your layout -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Include Select2 CSS and JS from CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             $("#studentIds").select2({
                 placeholder: "Select students",
                 allowClear: true,
-                width: 'resolve'  // use container width
+                width: 'resolve'
             });
         });
     </script>

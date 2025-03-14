@@ -75,5 +75,11 @@
         }
     </tbody>
 </table>
-
-@await Html.PartialAsync("_Pagination")
+@await Html.PartialAsync("_Pagination", new GradeProcessor.Models.PaginationModel
+{
+    ActionName = "Index", // or "Manage" for the sections manage view
+    Id = null, // or Model.Id if needed
+    SearchTerm = ViewBag.SearchTerm as string ?? "",
+    CurrentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1,
+    TotalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 1
+})

@@ -1,33 +1,37 @@
-﻿@model IEnumerable<dynamic>
+﻿@using GradeProcessor.Data
+@model IEnumerable<Section>
+
 @{
-    ViewData["Title"] = "secs";
+    ViewData["Title"] = "Sections";
+    string searchTerm = ViewBag.SearchTerm as string ?? "";
+    int currentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1;
+    int totalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 1;
 }
 
-<h2>Sections</h2>
+<h1>Sections</h1>
 
-<!-- Create Button -->
+<!-- (Your existing table and other markup for listing sections) -->
 <a asp-action="Create" class="btn btn-primary mb-3">Add New Section</a>
-
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Section Name</th>
+            <th>Name</th>
             <th>Subject</th>
             <th>Student Count</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var sec in Model)
-        {
-            <tr>
-                <td>@sec.Name</td>
-                <td>@sec.SubjectName</td>
-                <td>@sec.StudentCount</td>
-                <td>
-                    <a asp-action="Manage" asp-route-id="@sec.Id" class="btn btn-primary btn-sm">Manage</a>
-                </td>
-            </tr>
-        }
+    @foreach (var sec in Model)
+    {
+        <tr>
+            <td>@sec.Name</td>
+            <td>@(sec.Subject != null ? sec.Subject.Name : "N/A")</td>
+            <td>@(sec.Students != null ? sec.Students.Count() : 0)</td>
+            <td>
+                <a asp-action="Manage" asp-route-id="@sec.Id" class="btn btn-primary btn-sm">Manage</a>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

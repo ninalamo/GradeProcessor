@@ -1,0 +1,55 @@
+﻿@* Views/Shared/_Breadcrumb.cshtml *@
+@{
+    // Retrieve current controller and action names.
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+
+    string rootText = "";
+    string rootAction = "";
+    string secondText = "";
+
+    // Set values based on the controller.
+    if (currentController.Equals("Students", StringComparison.OrdinalIgnoreCase))
+    {
+        rootText = "Students";
+        rootAction = "Index"; // Link to Students Index.
+        secondText = currentAction.Equals("Index", StringComparison.OrdinalIgnoreCase)
+            ? "List"
+            : currentAction;
+    }
+    else if (currentController.Equals("Sections", StringComparison.OrdinalIgnoreCase))
+    {
+        rootText = "Sections";
+        rootAction = "Index"; // Link to Sections Index.
+        secondText = currentAction.Equals("Manage", StringComparison.OrdinalIgnoreCase)
+            ? "Manage"
+            : currentAction;
+    }
+    else if (currentController.Equals("Subjects", StringComparison.OrdinalIgnoreCase))
+    {
+        rootText = "Subjects";
+        rootAction = "Index";
+        secondText = currentAction.Equals("Index", StringComparison.OrdinalIgnoreCase)
+            ? "List"
+            : currentAction;
+    }
+    else
+    {
+        rootText = "";
+        rootAction = "";
+        secondText = "";
+    }
+
+    var rootLink = Url.Action(rootAction, currentController);
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@rootLink">@rootText</a>
+        </li>
+        @if (!string.IsNullOrEmpty(secondText))
+        {
+            <li class="breadcrumb-item active" aria-current="page">@secondText</li>
+        }
+    </ol>
+</nav>
